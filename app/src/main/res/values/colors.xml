@@ -7,4 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="blue_button">#2196F3</color>
+    <color name="red_google">#C24C43</color>
+    <color name="blue_app">#3F51B5</color>
 </resources>

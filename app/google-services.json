@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "472472523220-qior4h9oilf8nmsc2k3omhv18bji4kv7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tecmov.acmeexplorer",
+            "certificate_hash": "b66153004cbaa26466772da7b12c58ad0d3eade8"
+          }
+        },
+        {
           "client_id": "472472523220-480bq4suakn6lrk8nm61a41pbp1t5fbu.apps.googleusercontent.com",
           "client_type": 3
         }

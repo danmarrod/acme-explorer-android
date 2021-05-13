@@ -1,3 +1,29 @@
 <resources>
-    <string name="app_name">Acme Explorer</string>
+    <string name="app_name">Acme-Explorer</string>
+    <string name="login_email_et_hint">Correo electrónico</string>
+    <string name="login_pass_et_hint">Contraseña</string>
+    <string name="login_button_mail_text">acceder</string>
+    <string name="login_button_google_text">acceso con google</string>
+    <string name="login_button_register_text">Pulsa aquí para registrarte</string>
+    <string name="login_mail_error_1">El correo electrónico no puede estar vacío</string>
+    <string name="login_mail_error_2">El password no puede estar vacío</string>
+    <string name="login_mail_access_error">Se ha producido un error de acceso</string>
+    <string name="login_verified_mail_error">Aún no has validado tu cuenta, ¿quieres que te enviemos un email de validación?</string>
+    <string name="login_verified_mail_error_ok">Enviar correo</string>
+    <string name="login_verified_mail_error_sent">Hemos enviado un correo de verificación</string>
+    <string name="login_verified_mail_error_no_sent">No se ha podido enviar un correo de verificación a tu cuenta</string>
+    <string name="login_verified_mail_error_cancel">No enviar correo</string>
+    <string name="login_google_play_services_error">Debes actualizar Google Play Services antes de continuar</string>
+    <string name="gps_download_url">market://details?id=com.google.android.gms</string>
+    <string name="market_download_url">https://play.google.com/store/apps/details?id=com.google.android.gms</string>
+    <string name="login_download_gps">Actualizar</string>
+    <string name="default_client_id">472472523220-480bq4suakn6lrk8nm61a41pbp1t5fbu.apps.googleusercontent.com</string>
+    <string name="login_completed">El usuario %1$s ha accedido correctamente</string>
+    <string name="login_pass_confirmation_et_hint">Introducir de nuevo la contraseña</string>
+    <string name="signup_error_pass_not_match">Las contraseñas no coinciden</string>
+    <string name="signup_error_pass">Debe introducir la contraseña</string>
+    <string name="signup_error_user">Debe introducir el nombre de usuario</string>
+    <string name="signup_created">Usuario creado correctamente</string>
+    <string name="signup_created_error">No se ha podido crear el usuario</string>
+    <string name="login_button_registration_text">Registrar</string>
 </resources>
