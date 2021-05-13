@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "472472523220",
+    "project_id": "acmeexplorer-1cff3",
+    "storage_bucket": "acmeexplorer-1cff3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:472472523220:android:1c4e8a8452ad8d947e0641",
+        "android_client_info": {
+          "package_name": "com.tecmov.acmeexplorer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "472472523220-480bq4suakn6lrk8nm61a41pbp1t5fbu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyu1HLkr_v9l5j1yZVcpjWstSvYLptQP8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "472472523220-480bq4suakn6lrk8nm61a41pbp1t5fbu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
