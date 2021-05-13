@@ -14,6 +14,8 @@ public class Trip implements Serializable {
     private Date startedDate, finishedDate;
     private boolean isLike;
 
+
+
     public Trip(String ticker, String title, String description, Double price, Date startedDate, Date finishedDate, String picture, boolean isLike) {
         this.ticker = ticker;
         this.title = title;
@@ -118,6 +120,38 @@ public class Trip implements Serializable {
         }
 
         return list;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Trip trip = (Trip) o;
+
+        if (isLike != trip.isLike) return false;
+        if (ticker != null ? !ticker.equals(trip.ticker) : trip.ticker != null) return false;
+        if (title != null ? !title.equals(trip.title) : trip.title != null) return false;
+        if (description != null ? !description.equals(trip.description) : trip.description != null)
+            return false;
+        if (picture != null ? !picture.equals(trip.picture) : trip.picture != null) return false;
+        if (price != null ? !price.equals(trip.price) : trip.price != null) return false;
+        if (startedDate != null ? !startedDate.equals(trip.startedDate) : trip.startedDate != null)
+            return false;
+        return finishedDate != null ? finishedDate.equals(trip.finishedDate) : trip.finishedDate == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = ticker != null ? ticker.hashCode() : 0;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (picture != null ? picture.hashCode() : 0);
+        result = 31 * result + (price != null ? price.hashCode() : 0);
+        result = 31 * result + (startedDate != null ? startedDate.hashCode() : 0);
+        result = 31 * result + (finishedDate != null ? finishedDate.hashCode() : 0);
+        result = 31 * result + (isLike ? 1 : 0);
+        return result;
     }
 
 }

@@ -1,4 +1,5 @@
 package com.tecmov.acmeexplorer;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +29,10 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+import com.tecmov.acmeexplorer.entity.Trip;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -179,7 +184,6 @@ public class LoginActivity extends AppCompatActivity {
         Snackbar.make(signinButtonMail, getString(R.string.login_mail_access_error), Snackbar.LENGTH_LONG).show();
     }
 
-
     private void showErrorEmailVerified(FirebaseUser user) {
         hideLoginButton(false);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -193,8 +197,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }))).setNegativeButton(R.string.login_verified_mail_error_cancel, (dialog, which) -> {
         }).show();
-
-
     }
 
     private void hideLoginButton(boolean hide) {
@@ -226,7 +228,26 @@ public class LoginActivity extends AppCompatActivity {
     private void checkUserDatabaseLogin(FirebaseUser user) {
 
         Toast.makeText(this, String.format(getString(R.string.login_completed), user.getEmail()), Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(this, MainActivity.class));
+
+        FirebaseDatabaseService firebaseDatabaseService = FirebaseDatabaseService.getServiceInstance();
+        // El valor se obtiene de manera asíncrona, nos suscribimos al evento
+        firebaseDatabaseService.getTrips("1").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists() && dataSnapshot.getValue() != null){
+                    // Clase a la que se convertirá el valor devuelto, debe ser del mismo tipo. Igual en la base de datos
+                    Trip trip = dataSnapshot.getValue(Trip.class);
+                    Toast.makeText(LoginActivity.this, trip.toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        //startActivity(new Intent(this, MainActivity.class));
 
     }
 
