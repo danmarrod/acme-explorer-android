@@ -11,6 +11,7 @@ import android.transition.AutoTransition;
 import android.transition.Transition;
 import android.transition.TransitionManager;
 import android.transition.TransitionSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -29,6 +30,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -238,6 +240,46 @@ public class LoginActivity extends AppCompatActivity {
                     // Clase a la que se convertirá el valor devuelto, debe ser del mismo tipo. Igual en la base de datos
                     Trip trip = dataSnapshot.getValue(Trip.class);
                     Toast.makeText(LoginActivity.this, trip.toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        // Varios métodos que nos informará de lo que sucede en la collección
+        firebaseDatabaseService.getTrips().addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
+                    Trip trip = dataSnapshot.getValue(Trip.class);
+                    Log.i("Acme-Explorer", "Elemento añadido: " + trip.toString());
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
+                    Trip trip = dataSnapshot.getValue(Trip.class);
+                    Log.i("Acme-Explorer", "Elemento modificado: " + trip.toString());
+                }
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
+                    Trip trip = dataSnapshot.getValue(Trip.class);
+                    Log.i("Acme-Explorer", "Elemento eliminado: " + trip.toString());
+                }
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
+                    Trip trip = dataSnapshot.getValue(Trip.class);
+                    Log.i("Acme-Explorer", "Elemento movido: " + trip.toString());
                 }
             }
 
