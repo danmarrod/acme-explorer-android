@@ -26,4 +26,5 @@
     <string name="signup_created">Usuario creado correctamente</string>
     <string name="signup_created_error">No se ha podido crear el usuario</string>
     <string name="login_button_registration_text">Registrar</string>
+    <string name="firebase_url">https://acmeexplorer-1cff3-default-rtdb.europe-west1.firebasedatabase.app/</string>
 </resources>

@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "472472523220",
+    "firebase_url": "https://acmeexplorer-1cff3-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "acmeexplorer-1cff3",
     "storage_bucket": "acmeexplorer-1cff3.appspot.com"
   },

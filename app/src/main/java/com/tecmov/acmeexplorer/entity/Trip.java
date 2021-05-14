@@ -14,7 +14,8 @@ public class Trip implements Serializable {
     private Date startedDate, finishedDate;
     private boolean isLike;
 
-
+    public Trip() {
+    }
 
     public Trip(String ticker, String title, String description, Double price, Date startedDate, Date finishedDate, String picture, boolean isLike) {
         this.ticker = ticker;
