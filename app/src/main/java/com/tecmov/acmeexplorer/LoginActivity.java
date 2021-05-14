@@ -1,4 +1,5 @@
 package com.tecmov.acmeexplorer;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -33,8 +34,11 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.tecmov.acmeexplorer.entity.Trip;
+
+import java.util.GregorianCalendar;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -232,11 +236,24 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(this, String.format(getString(R.string.login_completed), user.getEmail()), Toast.LENGTH_SHORT).show();
 
         FirebaseDatabaseService firebaseDatabaseService = FirebaseDatabaseService.getServiceInstance();
+
+        firebaseDatabaseService.saveTrips(new Trip("ABCA045", "Madrid", "Museo del Prado", 32.00, new GregorianCalendar(2021, 6, 15).getTime(), new GregorianCalendar(2021, 6, 30).getTime(), "https://iconape.com/wp-content/png_logo_vector/beach-tour-logo.png", false), new DatabaseReference.CompletionListener() {
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError,@NonNull DatabaseReference databaseReference) {
+
+                if (databaseError == null)
+                    Log.i("Acme-Explorer","Trips insertado" );
+                else
+                    Log.i("Acme-Exporer", "Error al insertar nuevo trip");
+            }
+        });
+
         // El valor se obtiene de manera asíncrona, nos suscribimos al evento
         firebaseDatabaseService.getTrips("1").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists() && dataSnapshot.getValue() != null){
+                if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
                     // Clase a la que se convertirá el valor devuelto, debe ser del mismo tipo. Igual en la base de datos
                     Trip trip = dataSnapshot.getValue(Trip.class);
                     Toast.makeText(LoginActivity.this, trip.toString(), Toast.LENGTH_SHORT).show();
