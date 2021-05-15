@@ -52,6 +52,8 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputLayout loginPassParent;
     private AutoCompleteTextView loginEmail;
     private AutoCompleteTextView loginPass;
+    private ValueEventListener valueEventListener;
+    private FirebaseDatabaseService firebaseDatabaseService;
 
 
     @Override
@@ -235,8 +237,7 @@ public class LoginActivity extends AppCompatActivity {
 
         Toast.makeText(this, String.format(getString(R.string.login_completed), user.getEmail()), Toast.LENGTH_SHORT).show();
 
-        FirebaseDatabaseService firebaseDatabaseService = FirebaseDatabaseService.getServiceInstance();
-
+        firebaseDatabaseService = FirebaseDatabaseService.getServiceInstance();
         firebaseDatabaseService.saveTrips(new Trip("ABCA045", "Madrid", "Museo del Prado", 32.00, new GregorianCalendar(2021, 6, 15).getTime(), new GregorianCalendar(2021, 6, 30).getTime(), "https://iconape.com/wp-content/png_logo_vector/beach-tour-logo.png", false), new DatabaseReference.CompletionListener() {
 
             @Override
@@ -249,7 +250,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        // El valor se obtiene de manera asíncrona, nos suscribimos al evento
+        // Get single value by asynchronous call, subscribe at the event
         firebaseDatabaseService.getTrips("1").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -266,8 +267,46 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        // Varios métodos que nos informará de lo que sucede en la collección
-        firebaseDatabaseService.getTrips().addChildEventListener(new ChildEventListener() {
+        // Monitoring any updates in property 'title' for trip with id=1
+        firebaseDatabaseService.getTripsTitle("2").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
+                    String title = dataSnapshot.getValue(String.class);
+                    Log.i("Acme-Explorer", "Valor title modificado: " + title.toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        // to check only is called once
+        if (valueEventListener == null) {
+
+            // Monitor object with id 2, and info any updates in the object and its properties
+            valueEventListener = firebaseDatabaseService.getTrips("2").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
+                        Trip trip = dataSnapshot.getValue(Trip.class);
+                        Log.i("Acme-Explorer", "Elemento modificado individualmente: " + trip.toString());
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+        // Monitoring any updates in every objects inside of the collection
+        ChildEventListener childEventListener = firebaseDatabaseService.getTrips().addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
@@ -310,5 +349,10 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (firebaseDatabaseService != null && valueEventListener != null)
+         firebaseDatabaseService.getTrips("2").removeEventListener(valueEventListener);
+    }
 }
