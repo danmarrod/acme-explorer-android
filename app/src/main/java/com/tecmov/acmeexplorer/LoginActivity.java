@@ -24,6 +24,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
@@ -36,6 +37,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.tecmov.acmeexplorer.entity.Trip;
 
 import java.util.GregorianCalendar;
@@ -345,9 +348,38 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        //startActivity(new Intent(this, MainActivity.class));
+        FirestoreService firestoreService = FirestoreService.getServiceInstance();
+        //
+        firestoreService.saveTrip(new Trip("ABCA045", "Madrid", "Museo del Prado", 32.00, new GregorianCalendar(2021, 6, 15).getTime(), new GregorianCalendar(2021, 6, 30).getTime(), "https://iconape.com/wp-content/png_logo_vector/beach-tour-logo.png", false), new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        if (task.isSuccessful()){
+                            DocumentReference documentReference= task.getResult();
+                            // listener for reading, before this one, it's for writing
+                            documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()){
+                                        DocumentSnapshot documentSnapshot = task.getResult();
+                                        // documentSnapshot get properties values of the object
+                                        Trip trip = documentSnapshot.toObject(Trip.class);
+                                        Log.i("Acme-Explorer", "Firestore almacenamiento feedback: " + trip.toString());
+                                    }
+
+                                }
+                            });
+                            Log.i("Acme-Explorer", "Firestore almacenamiento completado " + task.getResult().getId());
+                        }else
+                            Log.i("Acme-Explorer", "Firestore almacenamiento ha fallado");
+
+                    }
+                });
+
+
+                //startActivity(new Intent(this, MainActivity.class));
 
     }
+
 
     @Override
     protected void onPause() {
