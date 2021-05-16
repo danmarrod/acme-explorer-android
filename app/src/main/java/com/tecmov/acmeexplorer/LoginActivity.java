@@ -39,9 +39,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.tecmov.acmeexplorer.entity.Trip;
 
+import org.w3c.dom.Document;
+
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -244,10 +251,10 @@ public class LoginActivity extends AppCompatActivity {
         firebaseDatabaseService.saveTrips(new Trip("ABCA045", "Madrid", "Museo del Prado", 32.00, new GregorianCalendar(2021, 6, 15).getTime(), new GregorianCalendar(2021, 6, 30).getTime(), "https://iconape.com/wp-content/png_logo_vector/beach-tour-logo.png", false), new DatabaseReference.CompletionListener() {
 
             @Override
-            public void onComplete(@Nullable DatabaseError databaseError,@NonNull DatabaseReference databaseReference) {
+            public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
 
                 if (databaseError == null)
-                    Log.i("Acme-Explorer","Trips insertado" );
+                    Log.i("Acme-Explorer", "Trips insertado");
                 else
                     Log.i("Acme-Exporer", "Error al insertar nuevo trip");
             }
@@ -351,33 +358,56 @@ public class LoginActivity extends AppCompatActivity {
         FirestoreService firestoreService = FirestoreService.getServiceInstance();
         //
         firestoreService.saveTrip(new Trip("ABCA045", "Madrid", "Museo del Prado", 32.00, new GregorianCalendar(2021, 6, 15).getTime(), new GregorianCalendar(2021, 6, 30).getTime(), "https://iconape.com/wp-content/png_logo_vector/beach-tour-logo.png", false), new OnCompleteListener<DocumentReference>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentReference> task) {
-                        if (task.isSuccessful()){
-                            DocumentReference documentReference= task.getResult();
-                            // listener for reading, before this one, it's for writing
-                            documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if (task.isSuccessful()){
-                                        DocumentSnapshot documentSnapshot = task.getResult();
-                                        // documentSnapshot get properties values of the object
-                                        Trip trip = documentSnapshot.toObject(Trip.class);
-                                        Log.i("Acme-Explorer", "Firestore almacenamiento feedback: " + trip.toString());
-                                    }
+            @Override
+            public void onComplete(@NonNull Task<DocumentReference> task) {
+                if (task.isSuccessful()) {
+                    DocumentReference documentReference = task.getResult();
+                    // listener for reading, before this one, it's for writing
+                    documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot documentSnapshot = task.getResult();
+                                // documentSnapshot get properties values of the object
+                                Trip trip = documentSnapshot.toObject(Trip.class);
+                                Log.i("Acme-Explorer", "Firestore almacenamiento feedback: " + trip.toString());
+                            }
 
-                                }
-                            });
-                            Log.i("Acme-Explorer", "Firestore almacenamiento completado " + task.getResult().getId());
-                        }else
-                            Log.i("Acme-Explorer", "Firestore almacenamiento ha fallado");
+                        }
+                    });
+                    Log.i("Acme-Explorer", "Firestore almacenamiento completado " + task.getResult().getId());
+                } else
+                    Log.i("Acme-Explorer", "Firestore almacenamiento ha fallado");
 
+            }
+        });
+
+        firestoreService.getTripsFiltered(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    List<Trip> trips = new ArrayList<>();
+                    for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                        Trip trip = documentSnapshot.toObject(Trip.class);
+                        trips.add(trip);
                     }
-                });
+                    Log.i("Acme-Explorer", "Firestore lectura " + trips.toString());
+                }
+            }
+        });
 
+        firestoreService.getTrip("44GGE6Vmjj60nqgQOvWm", new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (documentSnapshot != null && documentSnapshot.exists()){
+                    Trip trip = documentSnapshot.toObject(Trip.class);
+                    Log.i("Acme-Explorer", "Firestore lectura individual: " + trip.toString());
+                    loginEmail.setText(trip.toString());
+                }
+            }
+        });
 
-                //startActivity(new Intent(this, MainActivity.class));
-
+        startActivity(new Intent(this, MainActivity.class));
     }
 
 
@@ -385,6 +415,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         if (firebaseDatabaseService != null && valueEventListener != null)
-         firebaseDatabaseService.getTrips("2").removeEventListener(valueEventListener);
+            firebaseDatabaseService.getTrips("2").removeEventListener(valueEventListener);
     }
 }

@@ -3,7 +3,11 @@ package com.tecmov.acmeexplorer;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.tecmov.acmeexplorer.entity.Trip;
 
 public class FirestoreService {
@@ -27,5 +31,18 @@ public class FirestoreService {
 
     public void saveTrip(Trip trip, OnCompleteListener<DocumentReference> listener) {
         mDatabase.collection("users").document(userId).collection("trips").add(trip).addOnCompleteListener(listener);
+    }
+
+    public void getTrips(OnCompleteListener<QuerySnapshot> querySnapshotOnCompleteListener){
+        mDatabase.collection("users").document(userId).collection("trips").get().addOnCompleteListener(querySnapshotOnCompleteListener);
+    }
+
+    public void getTripsFiltered(OnCompleteListener<QuerySnapshot> querySnapshotOnCompleteListener){
+        mDatabase.collection("users").document(userId).collection("trips").whereGreaterThanOrEqualTo("price",32.0).orderBy("price", Query.Direction.ASCENDING).limit(3).get().addOnCompleteListener(querySnapshotOnCompleteListener);
+    }
+
+    public void getTrip(String id, EventListener<DocumentSnapshot> snapshotListener){
+        mDatabase.collection("users").document(userId).collection("trips").document(id).addSnapshotListener(snapshotListener);
+
     }
 }
