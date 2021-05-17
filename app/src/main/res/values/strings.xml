@@ -27,4 +27,11 @@
     <string name="signup_created_error">No se ha podido crear el usuario</string>
     <string name="login_button_registration_text">Registrar</string>
     <string name="firebase_url">https://acmeexplorer-1cff3-default-rtdb.europe-west1.firebasedatabase.app/</string>
+    <string name="take_picture">Obtener imagen</string>
+    <string name="take_picture_camera">Necesitamos acceder a tu camara</string>
+    <string name="take_picture_camera_rationale">Necesitamos acceder a tu cámara</string>
+    <string name="take_picture_camera_rationale_ok">permitir</string>
+    <string name="camera_not_granted">No es posible usar esta función sin la cámara</string>
+    <string name="take_write_external_storage_rationale">Necesitamos permisos de escritura en almacenamiento externo</string>
+    <string name="write_external_storage_not_granted">No es posible usar esta función sin escritura en almacenamiento externo</string>
 </resources>

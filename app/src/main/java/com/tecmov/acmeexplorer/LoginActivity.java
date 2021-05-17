@@ -95,6 +95,8 @@ public class LoginActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.GONE);
 
+        //startActivity(new Intent(this, FirebaseStorageActivity.class));
+
     }
 
     private void redirectSignupActivity() {
@@ -407,7 +409,8 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        startActivity(new Intent(this, MainActivity.class));
+        //startActivity(new Intent(this, MainActivity.class));
+        startActivity(new Intent(this, FirebaseStorageActivity.class));
     }
 
 
