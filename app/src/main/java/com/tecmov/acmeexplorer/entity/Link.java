@@ -4,6 +4,7 @@ import com.tecmov.acmeexplorer.ListMyTripsActivity;
 import com.tecmov.acmeexplorer.ListTripsActivity;
 import com.tecmov.acmeexplorer.MainActivity;
 import com.tecmov.acmeexplorer.R;
+import com.tecmov.acmeexplorer.TripList;
 
 
 import java.util.ArrayList;
@@ -48,7 +49,8 @@ public class Link {
         List<Link> list = new ArrayList<>();
 
         list.add(new Link("Trips", R.drawable.travels, ListTripsActivity.class));
-        list.add(new Link("My Trips",R.drawable.my_travels, ListMyTripsActivity.class));
+       //list.add(new Link("My Trips",R.drawable.my_travels, ListMyTripsActivity.class));
+        list.add(new Link("My Trips",R.drawable.my_travels, TripList.class));
 
         return list;
     }

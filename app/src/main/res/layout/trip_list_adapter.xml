@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/linearLayoutTrip"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
+
+    <ImageView
+        android:id="@+id/imageViewTrip"
+        android:layout_width="0dp"
+        android:layout_height="71dp"
+        android:layout_weight="1"
+
+        app:srcCompat="@drawable/travels" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textViewTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Title" />
+
+        <TextView
+            android:id="@+id/textViewDescription"
+            android:layout_width="144dp"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/textViewPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Price"
+            android:textSize="16dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textViewStartedDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="START" />
+
+            <TextView
+                android:id="@+id/textViewFinishedDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="END" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Switch
+        android:id="@+id/switchLike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="UpdateTrip"
+        android:text="Like" />
+
+</LinearLayout>

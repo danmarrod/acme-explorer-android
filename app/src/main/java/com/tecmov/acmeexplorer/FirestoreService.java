@@ -49,7 +49,7 @@ public class FirestoreService {
     }
 
     // get a collection trips like getTrips before but this case we'll get future updates
-    public ListenerRegistration getTrip(EventListener<QuerySnapshot> querySnapshotOnCompleteListener) {
+    public ListenerRegistration getTrips(EventListener<QuerySnapshot> querySnapshotOnCompleteListener) {
         return mDatabase.collection("users").document(userId).collection("trips").addSnapshotListener(querySnapshotOnCompleteListener);
     }
 }

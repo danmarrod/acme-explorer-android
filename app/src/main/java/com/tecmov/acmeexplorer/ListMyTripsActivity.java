@@ -1,6 +1,5 @@
 package com.tecmov.acmeexplorer;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -46,7 +45,7 @@ public class ListMyTripsActivity extends AppCompatActivity {
         });
 
         gridLayoutManager = new GridLayoutManager(this, 1);
-        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.TripListAdapter);
         recyclerView.setAdapter(new TripAdapter(myTripsList));
         recyclerView.setLayoutManager(gridLayoutManager);
 

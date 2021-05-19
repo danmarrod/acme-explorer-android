@@ -11,14 +11,10 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.tecmov.acmeexplorer.adapters.TripAdapter;
 import com.tecmov.acmeexplorer.entity.Trip;
 import com.tecmov.acmeexplorer.utils.Util;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -37,7 +33,8 @@ public class ListTripsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list_trips);
 
         switchColumn = findViewById(R.id.switchColumn);
-        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.TripListAdapter);
+
 
         if (Constants.chargedTrips == null)
             Constants.chargedTrips = Trip.generateTrips(5);
