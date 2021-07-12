@@ -172,7 +172,6 @@ public class LoginActivity extends AppCompatActivity {
         if (mAuth != null) {
             mAuth.signInWithEmailAndPassword(loginEmail.getText().toString(), loginPass.getText().toString()).addOnCompleteListener(this, task -> {
                 if (!task.isSuccessful() || task.getResult().getUser() == null) {
-                    //TODO First time not pass
                     showErrorDialogMail();
                 } else if (!task.getResult().getUser().isEmailVerified()) {
                     showErrorEmailVerified(task.getResult().getUser());

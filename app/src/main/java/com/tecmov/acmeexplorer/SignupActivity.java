@@ -53,9 +53,11 @@ public class SignupActivity extends AppCompatActivity {
                 login_pass.setErrorEnabled(true);
                 login_pass.setError(getString(R.string.signup_error_pass_not_match));
             } else {
-                FirebaseAuth.getInstance().createUserWithEmailAndPassword(login_email_et.getText().toString(), login_email_et.getText().toString()).addOnCompleteListener(task -> {
+                FirebaseAuth.getInstance().createUserWithEmailAndPassword(login_email_et.getText().toString(), login_pass_et.getText().toString()).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(this, R.string.signup_created, Toast.LENGTH_SHORT).show();
+                        // send email confirmation
+                        FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
                         SignupActivity.this.finish();
                     } else {
                         Toast.makeText(this, R.string.signup_created_error, Toast.LENGTH_SHORT).show();

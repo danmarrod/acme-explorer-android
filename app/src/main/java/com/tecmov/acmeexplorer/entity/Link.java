@@ -49,8 +49,8 @@ public class Link {
         List<Link> list = new ArrayList<>();
 
         list.add(new Link("Trips", R.drawable.travels, ListTripsActivity.class));
-       //list.add(new Link("My Trips",R.drawable.my_travels, ListMyTripsActivity.class));
-        list.add(new Link("My Trips",R.drawable.my_travels, TripList.class));
+        list.add(new Link("Liked trips",R.drawable.liked_travels, ListMyTripsActivity.class));
+        list.add(new Link("New trips",R.drawable.my_travels, TripList.class));
 
         return list;
     }

@@ -11,7 +11,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.tecmov.acmeexplorer.entity.Trip;
 
-public class FirestoreService {
+public class    FirestoreService {
 
     private static String userId;
     private static FirebaseFirestore mDatabase;
