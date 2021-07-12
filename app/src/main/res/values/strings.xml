@@ -34,4 +34,6 @@
     <string name="camera_not_granted">No es posible usar esta función sin la cámara</string>
     <string name="take_write_external_storage_rationale">Necesitamos permisos de escritura en almacenamiento externo</string>
     <string name="write_external_storage_not_granted">No es posible usar esta función sin escritura en almacenamiento externo</string>
+    <string name="main_button_create_trip_text">New trip</string>
+    <string name="main_button_profile_text">Profile</string>
 </resources>
