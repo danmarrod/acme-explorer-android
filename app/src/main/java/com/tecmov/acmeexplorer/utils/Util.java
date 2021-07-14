@@ -44,4 +44,17 @@ public class Util {
         return 0;
     }
 
+    public static Date StringToDate (String date) {
+        Date result = new Date();
+
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            result = df.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
 }

@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     GridView gridView;
+    Button main_create_trip_button, main_create_profile_button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         gridView=findViewById(R.id.gridView);
         gridView.setAdapter(new LinkAdapter(Link.generateLink(),this));
+        main_create_trip_button = findViewById(R.id.main_create_trip_button);
+        main_create_profile_button = findViewById(R.id.main_create_profile_button);
+
+        main_create_trip_button.setOnClickListener(l -> startActivity(new Intent(this, TripCreateActivity.class)));
+        main_create_profile_button.setOnClickListener(l -> startActivity(new Intent(this, TripCreateActivity.class)));
     }
 
     public void ListView(View view) {

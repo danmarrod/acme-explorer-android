@@ -42,11 +42,14 @@ public class TripList extends AppCompatActivity {
         setupActionBar();
     }
 
+    // back button
     private void setupActionBar() {
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null)
             actionBar.setDisplayHomeAsUpEnabled(true);
     }
+
+    // delete listener registration in dabatase updates
     @Override
     protected void onDestroy(){
         super.onDestroy();

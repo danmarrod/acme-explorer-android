@@ -36,4 +36,13 @@
     <string name="write_external_storage_not_granted">No es posible usar esta función sin escritura en almacenamiento externo</string>
     <string name="main_button_create_trip_text">New trip</string>
     <string name="main_button_profile_text">Profile</string>
+    <string name="trip_create_name_et_hint">Nombre del viaje</string>
+    <string name="trip_create_description_et_hint">Descripción de viaje</string>
+    <string name="trip_create_price_et_hint">Precio del viaje</string>
+    <string name="trip_create_start_date_et_hint">Fecha de inicio</string>
+    <string name="trip_create_finish_date_et_hint">Fecha de finalización</string>
+    <string name="trip_create_picture_et_hint">Añada una imagen del viaje</string>
+    <string name="trip_create_ticker">Ticker autogenerado</string>
+    <string name="trip_create_button_text">Añadir viaje</string>
+    <string name="trip_create_title_et_hint">Título del viaje</string>
 </resources>
