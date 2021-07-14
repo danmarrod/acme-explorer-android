@@ -45,4 +45,6 @@
     <string name="trip_create_ticker">Ticker autogenerado</string>
     <string name="trip_create_button_text">Añadir viaje</string>
     <string name="trip_create_title_et_hint">Título del viaje</string>
+    <string name="trip_create_verication_empty">this field must be filled</string>
+    <string name="trip_create_verication_date_before">start date must be before finish date</string>
 </resources>

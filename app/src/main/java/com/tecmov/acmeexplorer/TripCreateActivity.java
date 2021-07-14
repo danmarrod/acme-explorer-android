@@ -3,12 +3,18 @@ package com.tecmov.acmeexplorer;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ProgressBar;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,10 +26,18 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.tecmov.acmeexplorer.entity.Trip;
 import com.tecmov.acmeexplorer.utils.Util;
 
+import java.util.Calendar;
+import java.util.UUID;
+
 public class TripCreateActivity extends AppCompatActivity {
 
+    private static final String PREF_UNIQUE_ID = "TK";
+    private static final String DEFAULT_PICTURE = "https://iconape.com/wp-content/png_logo_vector/beach-tour-logo.png";
     private Button trip_create_button;
     private Trip trip;
+
+    Calendar calendar = Calendar.getInstance();
+    int year, month, day, hour, minute;
 
     private TextInputLayout trip_create_ticker;
     private AutoCompleteTextView trip_create_ticker_et;
@@ -78,22 +92,70 @@ public class TripCreateActivity extends AppCompatActivity {
 
     private void attemptTripCreate() {
 
-        trip = new Trip();
+        trip_create_title.setError(null);
+        trip_create_description.setError(null);
+        trip_create_price.setError(null);
+        trip_create_start_date.setError(null);
+        trip_create_finish_date.setError(null);
+        trip_create_picture.setError(null);
+        boolean fails = false;
 
+        if (trip_create_title_et.getText().length() == 0) {
+            trip_create_title.setErrorEnabled(true);
+            trip_create_title.setError(getString(R.string.trip_create_verication_empty));
+            fails = true;
+        }
+
+        if (trip_create_description_et.getText().length() == 0) {
+            trip_create_description.setErrorEnabled(true);
+            trip_create_description.setError(getString(R.string.trip_create_verication_empty));
+            fails = true;
+        }
+
+        if (trip_create_price_et.getText().length() == 0) {
+            trip_create_price.setErrorEnabled(true);
+            trip_create_price.setError(getString(R.string.trip_create_verication_empty));
+            fails = true;
+        }
+
+        if (trip_create_start_date_et.getText().length() == 0) {
+            trip_create_start_date.setErrorEnabled(true);
+            trip_create_start_date.setError(getString(R.string.trip_create_verication_empty));
+            fails = true;
+        }
+
+        if (trip_create_finish_date_et.getText().length() == 0) {
+            trip_create_finish_date.setErrorEnabled(true);
+            trip_create_finish_date.setError(getString(R.string.trip_create_verication_empty));
+            fails = true;
+        }
+
+        if (Util.StringToDate(trip_create_start_date_et.getText().toString()).after(Util.StringToDate(trip_create_finish_date_et.getText().toString()))) {
+            trip_create_start_date.setErrorEnabled(true);
+            trip_create_finish_date.setErrorEnabled(true);
+            trip_create_start_date.setError(getString(R.string.trip_create_verication_date_before));
+            fails = true;
+        }
+
+        if (!fails)
+            this.tripCreate();
+
+    }
+
+    private void tripCreate() {
+
+        trip = new Trip();
         trip.setTitle(trip_create_title_et.getText().toString());
         trip.setDescription(trip_create_description_et.getText().toString());
         trip.setPrice(Double.parseDouble(trip_create_price_et.getText().toString()));
         trip.setStartedDate(Util.StringToDate(trip_create_start_date_et.getText().toString()));
         trip.setFinishedDate(Util.StringToDate(trip_create_finish_date_et.getText().toString()));
-        trip.setPicture(trip_create_picture_et.getText().toString());
-        trip.setTicker(trip_create_ticker_et.getText().toString());
+        trip.setTicker(generateTicker());
         trip.setLike(false);
-
-        this.tripCreate(trip);
-
-    }
-
-    private void tripCreate(Trip trip) {
+        if (trip_create_picture_et.getText().toString().isEmpty())
+            trip.setPicture(DEFAULT_PICTURE);
+        else
+            trip.setPicture(trip_create_picture_et.getText().toString());
 
         firestoreService.saveTrip(trip, new OnCompleteListener<DocumentReference>() {
             @Override
@@ -110,7 +172,6 @@ public class TripCreateActivity extends AppCompatActivity {
                                 Trip trip = documentSnapshot.toObject(Trip.class);
                                 Log.i("Acme-Explorer", "Trip created feedback: " + trip.toString());
                             }
-
                         }
                     });
                     Log.i("Acme-Explorer", "Trip created successfully " + task.getResult().getId());
@@ -124,4 +185,68 @@ public class TripCreateActivity extends AppCompatActivity {
             }
         });
     }
+
+    private String generateTicker() {
+        String result;
+        result = PREF_UNIQUE_ID + UUID.randomUUID().toString().substring(0,6);
+        return result;
+    }
+
+    public void setStartDate(View view) {
+
+        if (trip_create_start_date_et.getText().toString().isEmpty()) {
+            year = calendar.get(Calendar.YEAR);
+            month = calendar.get(Calendar.MONTH);
+            day = calendar.get(Calendar.DAY_OF_MONTH);
+        } else {
+            String split[] = trip_create_start_date_et.getText().toString().split("/");
+            day = Integer.valueOf(split[0]);
+            month = Integer.valueOf(split[1]) - 1;
+            year = Integer.valueOf(split[2]);
+        }
+
+        DatePickerDialog pickerDialog = new DatePickerDialog(this,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int yy, int mm, int dd) {
+                        trip_create_start_date_et.setText(dd + "/" + (mm + 1) + "/" + yy);
+                    }
+                }, year, month, day);
+        pickerDialog.show();
+
+    }
+
+    public void setFinishDate(View view) {
+
+        if (trip_create_finish_date_et.getText().toString().isEmpty()) {
+            year = calendar.get(Calendar.YEAR);
+            month = calendar.get(Calendar.MONTH);
+            day = calendar.get(Calendar.DAY_OF_MONTH);
+        } else {
+            String split[] = trip_create_finish_date_et.getText().toString().split("/");
+            day = Integer.valueOf(split[0]);
+            month = Integer.valueOf(split[1]) - 1;
+            year = Integer.valueOf(split[2]);
+        }
+
+        DatePickerDialog pickerDialog = new DatePickerDialog(this,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int yy, int mm, int dd) {
+                        trip_create_finish_date_et.setText(dd + "/" + (mm + 1) + "/" + yy);
+                    }
+                }, year, month, day);
+        //pickerDialog.getDatePicker().setMinDate(textViewDateIn);
+        pickerDialog.show();
+    }
+
+    public void setPrice(View view) {
+
+        if (!trip_create_price_et.getText().toString().contains(".")) {
+            trip_create_price_et.setText(trip_create_price_et.getText().toString() + ".00");
+        }
+
+
+    }
+
 }
