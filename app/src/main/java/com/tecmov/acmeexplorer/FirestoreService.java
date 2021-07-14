@@ -52,4 +52,9 @@ public class    FirestoreService {
     public ListenerRegistration getTrips(EventListener<QuerySnapshot> querySnapshotOnCompleteListener) {
         return mDatabase.collection("users").document(userId).collection("trips").addSnapshotListener(querySnapshotOnCompleteListener);
     }
+
+    public ListenerRegistration getAllTrips(EventListener<QuerySnapshot> querySnapshotOnCompleteListener) {
+        return mDatabase.collectionGroup("trips").addSnapshotListener(querySnapshotOnCompleteListener);
+    }
+
 }

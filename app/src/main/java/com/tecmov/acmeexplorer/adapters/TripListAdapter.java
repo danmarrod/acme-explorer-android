@@ -42,6 +42,11 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.ViewHo
     public TripListAdapter() {
         tripList = new ArrayList<>();
         String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        listenerRegistration = FirestoreService.getServiceInstance().getAllTrips(this);
+    }
+
+    public TripListAdapter(String userId) {
+        tripList = new ArrayList<>();
         listenerRegistration = FirestoreService.getServiceInstance().getTrips(this);
     }
 

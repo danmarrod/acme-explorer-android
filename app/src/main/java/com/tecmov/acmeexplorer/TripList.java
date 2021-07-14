@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.tecmov.acmeexplorer.adapters.TripListAdapter;
 
@@ -21,7 +22,7 @@ public class TripList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_list);
 
-        tripListAdapter = new TripListAdapter();
+        tripListAdapter = new TripListAdapter("userId");
         RecyclerView incoming_recycler_view = findViewById(R.id.TripListAdapter);
         incoming_recycler_view.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         incoming_recycler_view.setAdapter(tripListAdapter);
@@ -30,6 +31,7 @@ public class TripList extends AppCompatActivity {
             if (tripListAdapter.getItemCount() > 0) {
                 //TODO add image background
                 incoming_recycler_view.setVisibility(View.VISIBLE);
+                Toast.makeText(this, "TOTAL TRIPS: " + tripListAdapter.getItemCount() + " elements", Toast.LENGTH_SHORT).show();
             } else {
                 incoming_recycler_view.setVisibility(View.GONE);
             }
@@ -40,6 +42,7 @@ public class TripList extends AppCompatActivity {
         });
 
         setupActionBar();
+
     }
 
     // back button

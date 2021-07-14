@@ -248,6 +248,21 @@ public class LoginActivity extends AppCompatActivity {
     private void checkUserDatabaseLogin(FirebaseUser user) {
 
         Toast.makeText(this, String.format(getString(R.string.login_completed), user.getEmail()), Toast.LENGTH_SHORT).show();
+        //testDatabases();
+
+        startActivity(new Intent(this, MainActivity.class));
+        //startActivity(new Intent(this, FirebaseStorageActivity.class));
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (firebaseDatabaseService != null && valueEventListener != null)
+            firebaseDatabaseService.getTrips("2").removeEventListener(valueEventListener);
+    }
+
+    private void testDatabases() {
 
         firebaseDatabaseService = FirebaseDatabaseService.getServiceInstance();
         firebaseDatabaseService.saveTrips(new Trip("ABCA045", "Madrid", "Museo del Prado", 32.00, new GregorianCalendar(2021, 6, 15).getTime(), new GregorianCalendar(2021, 6, 30).getTime(), "https://iconape.com/wp-content/png_logo_vector/beach-tour-logo.png", false), new DatabaseReference.CompletionListener() {
@@ -359,7 +374,7 @@ public class LoginActivity extends AppCompatActivity {
 
         FirestoreService firestoreService = FirestoreService.getServiceInstance();
         //
-        firestoreService.saveTrip(new Trip("ABCA045", "Madrid", "Museo del Prado", 32.00, new GregorianCalendar(2021, 6, 15).getTime(), new GregorianCalendar(2021, 6, 30).getTime(), "https://iconape.com/wp-content/png_logo_vector/beach-tour-logo.png", false), new OnCompleteListener<DocumentReference>() {
+        firestoreService.saveTrip(new Trip("ABCA045", "Madrid", "Museo del Prado", 32.5, new GregorianCalendar(2021, 6, 15).getTime(), new GregorianCalendar(2021, 6, 30).getTime(), "https://iconape.com/wp-content/png_logo_vector/beach-tour-logo.png", false), new OnCompleteListener<DocumentReference>() {
             @Override
             public void onComplete(@NonNull Task<DocumentReference> task) {
                 if (task.isSuccessful()) {
@@ -408,16 +423,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-
-        startActivity(new Intent(this, MainActivity.class));
-        //startActivity(new Intent(this, FirebaseStorageActivity.class));
     }
 
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (firebaseDatabaseService != null && valueEventListener != null)
-            firebaseDatabaseService.getTrips("2").removeEventListener(valueEventListener);
-    }
 }

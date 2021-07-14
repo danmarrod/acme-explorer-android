@@ -1,17 +1,21 @@
 package com.tecmov.acmeexplorer;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
 import com.tecmov.acmeexplorer.adapters.TripAdapter;
+import com.tecmov.acmeexplorer.adapters.TripListAdapter;
 import com.tecmov.acmeexplorer.entity.Trip;
 import com.tecmov.acmeexplorer.utils.Util;
 
@@ -22,10 +26,11 @@ import java.util.List;
 public class ListTripsActivity extends AppCompatActivity {
 
     private static final int FILTER = 1;
-    RecyclerView recyclerView;
+    RecyclerView incoming_recycler_view;
     private static List<Trip> tripsList;
     private Switch switchColumn;
     private GridLayoutManager gridLayoutManager;
+    private TripListAdapter tripListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +38,7 @@ public class ListTripsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list_trips);
 
         switchColumn = findViewById(R.id.switchColumn);
-        recyclerView = findViewById(R.id.TripListAdapter);
+        incoming_recycler_view = findViewById(R.id.TripListAdapter);
 
 
         if (Constants.chargedTrips == null)
@@ -49,12 +54,33 @@ public class ListTripsActivity extends AppCompatActivity {
             }
         });
 
+        tripListAdapter = new TripListAdapter();
         gridLayoutManager = new GridLayoutManager(this, 1);
-        recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.setAdapter(new TripAdapter(tripsList));
+        incoming_recycler_view.setLayoutManager(gridLayoutManager);
+        incoming_recycler_view.setAdapter(tripListAdapter);
 
-        Toast.makeText(this, "TOTAL TRIPS: " + tripsList.size() + " elements", Toast.LENGTH_SHORT).show();
+        tripListAdapter.setDataChangedListener(() -> {
+            if (tripListAdapter.getItemCount() > 0) {
+                //TODO add image background
+                incoming_recycler_view.setVisibility(View.VISIBLE);
+                Toast.makeText(this, "TOTAL TRIPS: " + tripListAdapter.getItemCount() + " elements", Toast.LENGTH_SHORT).show();
+            } else {
+                incoming_recycler_view.setVisibility(View.GONE);
+            }
+        });
 
+        tripListAdapter.setErrorListener(error -> {
+            incoming_recycler_view.setVisibility(View.GONE);
+        });
+
+        setupActionBar();
+
+    }
+
+    private void setupActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+            actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
     public void FilterView(View view) {
@@ -78,7 +104,7 @@ public class ListTripsActivity extends AppCompatActivity {
         }
     }
 
-    private void refreshRecycle(String filter_startedDate, String filter_finishedDate, String filter_priceMin, String filter_priceMax)  {
+    private void refreshRecycle(String filter_startedDate, String filter_finishedDate, String filter_priceMin, String filter_priceMax) {
 
         List<Trip> filterTripsList = new ArrayList<Trip>();
         Long finishedDate, startedDate;
@@ -113,14 +139,28 @@ public class ListTripsActivity extends AppCompatActivity {
                             filterTripsList.add(trip);
         }
 
-        recyclerView.setAdapter(new TripAdapter(filterTripsList));
+        incoming_recycler_view.setAdapter(new TripAdapter(filterTripsList));
 
         Toast.makeText(this, "TOTAL TRIPS: " + filterTripsList.size() + " elements", Toast.LENGTH_SHORT).show();
 
 
     }
 
+    // delete listener registration in dabatase updates
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        if(tripListAdapter != null && tripListAdapter.listenerRegistration != null)
+            tripListAdapter.listenerRegistration.remove();
+    }
 
-    public void UpdateTrip(View view) {
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home){
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
