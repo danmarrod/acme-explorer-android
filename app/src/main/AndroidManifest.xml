@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -17,7 +18,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".MapActivity"></activity>
+        <activity android:name=".ProfileActivity" />
         <activity android:name=".TripCreateActivity" />
         <activity android:name=".TripList" />
         <activity android:name=".FirebaseStorageActivity" />
@@ -35,6 +37,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDS6Gn83jEoWB2zZf0n7JGiNQHOwGXsHW4" />
     </application>
 
 </manifest>
