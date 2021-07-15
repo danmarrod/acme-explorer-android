@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         main_create_profile_button = findViewById(R.id.main_create_profile_button);
 
         main_create_trip_button.setOnClickListener(l -> startActivity(new Intent(this, TripCreateActivity.class)));
-        main_create_profile_button.setOnClickListener(l -> startActivity(new Intent(this, TripCreateActivity.class)));
+        main_create_profile_button.setOnClickListener(l -> startActivity(new Intent(this, ProfileActivity.class)));
     }
 
     public void ListView(View view) {

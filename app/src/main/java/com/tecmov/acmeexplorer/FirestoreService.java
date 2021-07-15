@@ -10,6 +10,7 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.tecmov.acmeexplorer.entity.Trip;
+import com.tecmov.acmeexplorer.entity.User;
 
 public class    FirestoreService {
 
@@ -56,5 +57,15 @@ public class    FirestoreService {
     public ListenerRegistration getAllTrips(EventListener<QuerySnapshot> querySnapshotOnCompleteListener) {
         return mDatabase.collectionGroup("trips").addSnapshotListener(querySnapshotOnCompleteListener);
     }
+
+    public void saveUser(User user, OnCompleteListener<DocumentReference> listener) {
+        mDatabase.collection("users").document(userId).set(user);
+    }
+
+    public void getUser() {
+        mDatabase.collection("users").document(userId).get();
+
+    }
+
 
 }
