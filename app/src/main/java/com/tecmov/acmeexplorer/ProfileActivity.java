@@ -15,9 +15,11 @@ import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -65,6 +67,9 @@ public class ProfileActivity extends AppCompatActivity {
     private TextInputLayout profile_address;
     private AutoCompleteTextView profile_address_et;
 
+    private ProgressBar progressBar;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,7 +88,9 @@ public class ProfileActivity extends AppCompatActivity {
         profile_surname_et = findViewById(R.id.profile_surname_et);
         profile_address = findViewById(R.id.profile_address);
         profile_address_et = findViewById(R.id.profile_address_et);
+        progressBar = findViewById(R.id.profile_progress);
 
+        progressBar.setVisibility(View.GONE);
         getUserProfile();
 
         takePictureButton.setOnClickListener(l -> {
@@ -117,7 +124,7 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                     if (user.getPicture() != null) {
                         userProfile.setPicture(user.getPicture());
-                        Glide.with(ProfileActivity.this)
+                        Glide.with(getApplicationContext())
                                 .load(user.getPicture())
                                 .placeholder(R.drawable.ic_launcher_background)
                                 .centerCrop()
@@ -213,6 +220,8 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        progressBar.setVisibility(View.VISIBLE);
+
         if (requestCode == TAKE_PHOTO_CODE && resultCode == RESULT_OK) {
             File filePicture = new File(file);
 
@@ -236,12 +245,13 @@ public class ProfileActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Uri> task) {
                                 if (task.isSuccessful()) {
                                     userProfile.setPicture(task.getResult().toString());
-                                    Glide.with(ProfileActivity.this)
+                                    Glide.with(getApplicationContext())
                                             .load(task.getResult())
                                             .placeholder(R.drawable.ic_launcher_background)
                                             .centerCrop()
                                             .into(takePictureImage);
                                 }
+                                progressBar.setVisibility(View.GONE);
                             }
                         });
                     }
