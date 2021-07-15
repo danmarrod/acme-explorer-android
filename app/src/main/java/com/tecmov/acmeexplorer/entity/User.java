@@ -8,6 +8,8 @@ public class User implements Serializable {
     private String surname;
     private String address;
     private String picture;
+    private String latitude;
+    private String longitude;
 
     public User(String name, String surname, String address, String picture) {
         this.name = name;
@@ -73,5 +75,21 @@ public class User implements Serializable {
 
     public void setPicture(String picture) {
         this.picture = picture;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
     }
 }

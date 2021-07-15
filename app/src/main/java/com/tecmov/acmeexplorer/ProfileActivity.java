@@ -49,7 +49,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private Button takePictureButton, profileSaveButton;
     private ImageView takePictureImage;
-    private User user;
+    private User userProfile;
 
     private String file;
 
@@ -70,10 +70,9 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        user = new User();
+        userProfile = new User();
         mAuth = FirebaseAuth.getInstance();
         firestoreService = firestoreService.getServiceInstance();
-
 
         takePictureButton = findViewById(R.id.take_picture_button);
         takePictureImage = findViewById(R.id.take_picture_image);
@@ -103,18 +102,27 @@ public class ProfileActivity extends AppCompatActivity {
                 if (documentSnapshot != null && documentSnapshot.exists()) {
                     User user = documentSnapshot.toObject(User.class);
                     Log.i("Acme-Explorer", "Firestore get user: " + user.toString());
-                    if (user.getName() != null)
-                        profile_name_et.setText(user.getName().toString());
-                    if (user.getSurname() != null)
-                        profile_surname_et.setText(user.getSurname().toString());
-                    if (user.getAddress() != null)
-                        profile_address_et.setText(user.getAddress().toString());
-                    if (user.getPicture() != null)
+
+                    if (user.getName() != null) {
+                        userProfile.setName(user.getName());
+                        profile_name_et.setText(userProfile.getName());
+                    }
+                    if (user.getSurname() != null) {
+                        userProfile.setSurname(user.getSurname());
+                        profile_surname_et.setText(userProfile.getSurname());
+                    }
+                    if (user.getAddress() != null) {
+                        userProfile.setAddress(user.getAddress());
+                        profile_address_et.setText(userProfile.getAddress());
+                    }
+                    if (user.getPicture() != null) {
+                        userProfile.setPicture(user.getPicture());
                         Glide.with(ProfileActivity.this)
                                 .load(user.getPicture())
                                 .placeholder(R.drawable.ic_launcher_background)
                                 .centerCrop()
                                 .into(takePictureImage);
+                    }
                 }
             }
         });
@@ -124,11 +132,12 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void saveProfile() {
 
-        user.setName(profile_name_et.getText().toString());
-        user.setSurname(profile_surname_et.getText().toString());
-        user.setAddress(profile_address_et.getText().toString());
+        userProfile.setName(profile_name_et.getText().toString());
+        userProfile.setSurname(profile_surname_et.getText().toString());
+        userProfile.setAddress(profile_address_et.getText().toString());
+        userProfile.setAddress(profile_address_et.getText().toString());
 
-        firestoreService.saveUser(user, task -> {
+        firestoreService.saveUser(userProfile, task -> {
             if (task.isSuccessful()) {
                 DocumentReference documentReference = task.getResult();
                 documentReference.get().addOnCompleteListener(task1 -> {
@@ -226,13 +235,12 @@ public class ProfileActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<Uri> task) {
                                 if (task.isSuccessful()) {
+                                    userProfile.setPicture(task.getResult().toString());
                                     Glide.with(ProfileActivity.this)
                                             .load(task.getResult())
                                             .placeholder(R.drawable.ic_launcher_background)
                                             .centerCrop()
                                             .into(takePictureImage);
-
-                                user.setPicture(task.getResult().toString());
                                 }
                             }
                         });
@@ -268,5 +276,10 @@ public class ProfileActivity extends AppCompatActivity {
                 break;
 
         }
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
     }
 }
