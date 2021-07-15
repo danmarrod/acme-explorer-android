@@ -30,9 +30,12 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.tecmov.acmeexplorer.entity.Trip;
 import com.tecmov.acmeexplorer.entity.User;
 
 import java.io.File;
@@ -67,8 +70,10 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        user = new User();
         mAuth = FirebaseAuth.getInstance();
         firestoreService = firestoreService.getServiceInstance();
+
 
         takePictureButton = findViewById(R.id.take_picture_button);
         takePictureImage = findViewById(R.id.take_picture_image);
@@ -80,6 +85,8 @@ public class ProfileActivity extends AppCompatActivity {
         profile_address = findViewById(R.id.profile_address);
         profile_address_et = findViewById(R.id.profile_address_et);
 
+        getUserProfile();
+
         takePictureButton.setOnClickListener(l -> {
             takePicture();
         });
@@ -88,38 +95,55 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
+    private void getUserProfile() {
+
+        firestoreService.getUser(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    User user = documentSnapshot.toObject(User.class);
+                    Log.i("Acme-Explorer", "Firestore get user: " + user.toString());
+                    if (user.getName() != null)
+                        profile_name_et.setText(user.getName().toString());
+                    if (user.getSurname() != null)
+                        profile_surname_et.setText(user.getSurname().toString());
+                    if (user.getAddress() != null)
+                        profile_address_et.setText(user.getAddress().toString());
+                    if (user.getPicture() != null)
+                        Glide.with(ProfileActivity.this)
+                                .load(user.getPicture())
+                                .placeholder(R.drawable.ic_launcher_background)
+                                .centerCrop()
+                                .into(takePictureImage);
+                }
+            }
+        });
+
+
+    }
+
     private void saveProfile() {
 
-        user = new User();
         user.setName(profile_name_et.getText().toString());
         user.setSurname(profile_surname_et.getText().toString());
         user.setAddress(profile_address_et.getText().toString());
 
-        firestoreService.saveUser(user, new OnCompleteListener<DocumentReference>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentReference> task) {
-                if (task.isSuccessful()) {
-                    DocumentReference documentReference = task.getResult();
-                    // listener for reading, before this one, it's for writing
-                    documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                DocumentSnapshot documentSnapshot = task.getResult();
-                                // documentSnapshot get properties values of the object
-                                User user = documentSnapshot.toObject(User.class);
-                                Log.i("Acme-Explorer", "User save feedback: " + user.toString());
-                            }
-                        }
-                    });
-                    Log.i("Acme-Explorer", "User saved successfully " + task.getResult().getId());
-                    Toast.makeText(ProfileActivity.this, "User saved successfully", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(ProfileActivity.this, MainActivity.class));
-
-                } else {
-                    Log.i("Acme-Explorer", "Error saving user");
-                    Toast.makeText(ProfileActivity.this, "Error saving user", Toast.LENGTH_SHORT).show();
-                }
+        firestoreService.saveUser(user, task -> {
+            if (task.isSuccessful()) {
+                DocumentReference documentReference = task.getResult();
+                documentReference.get().addOnCompleteListener(task1 -> {
+                    if (task1.isSuccessful()) {
+                        DocumentSnapshot documentSnapshot = task1.getResult();
+                        User user = documentSnapshot.toObject(User.class);
+                        Log.i("Acme-Explorer", "User save feedback: " + user.toString());
+                    }
+                });
+                Log.i("Acme-Explorer", "User saved successfully " + task.getResult().getId());
+                Toast.makeText(ProfileActivity.this, "User saved successfully", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(ProfileActivity.this, MainActivity.class));
+            } else {
+                Log.i("Acme-Explorer", "Error saving user");
+                Toast.makeText(ProfileActivity.this, "Error saving user", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -208,7 +232,7 @@ public class ProfileActivity extends AppCompatActivity {
                                             .centerCrop()
                                             .into(takePictureImage);
 
-                                    user.setPicture(task.getResult().toString());
+                                user.setPicture(task.getResult().toString());
                                 }
                             }
                         });

@@ -157,31 +157,25 @@ public class TripCreateActivity extends AppCompatActivity {
         else
             trip.setPicture(trip_create_picture_et.getText().toString());
 
-        firestoreService.saveTrip(trip, new OnCompleteListener<DocumentReference>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentReference> task) {
-                if (task.isSuccessful()) {
-                    DocumentReference documentReference = task.getResult();
-                    // listener for reading, before this one, it's for writing
-                    documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                DocumentSnapshot documentSnapshot = task.getResult();
-                                // documentSnapshot get properties values of the object
-                                Trip trip = documentSnapshot.toObject(Trip.class);
-                                Log.i("Acme-Explorer", "Trip created feedback: " + trip.toString());
-                            }
-                        }
-                    });
-                    Log.i("Acme-Explorer", "Trip created successfully " + task.getResult().getId());
-                    Toast.makeText(TripCreateActivity.this, "Trip created successfully", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(TripCreateActivity.this, MainActivity.class));
+        firestoreService.saveTrip(trip, task -> {
+            if (task.isSuccessful()) {
+                DocumentReference documentReference = task.getResult();
+                // listener for reading, before this one, it's for writing
+                documentReference.get().addOnCompleteListener(task1 -> {
+                    if (task1.isSuccessful()) {
+                        DocumentSnapshot documentSnapshot = task1.getResult();
+                        // documentSnapshot get properties values of the object
+                        Trip trip = documentSnapshot.toObject(Trip.class);
+                        Log.i("Acme-Explorer", "Trip created feedback: " + trip.toString());
+                    }
+                });
+                Log.i("Acme-Explorer", "Trip created successfully " + task.getResult().getId());
+                Toast.makeText(TripCreateActivity.this, "Trip created successfully", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(TripCreateActivity.this, MainActivity.class));
 
-                } else {
-                    Log.i("Acme-Explorer", "Error creating trip");
-                    Toast.makeText(TripCreateActivity.this, "Error creating trip", Toast.LENGTH_SHORT).show();
-                }
+            } else {
+                Log.i("Acme-Explorer", "Error creating trip");
+                Toast.makeText(TripCreateActivity.this, "Error creating trip", Toast.LENGTH_SHORT).show();
             }
         });
     }

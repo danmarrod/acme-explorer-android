@@ -62,9 +62,8 @@ public class    FirestoreService {
         mDatabase.collection("users").document(userId).set(user);
     }
 
-    public void getUser() {
-        mDatabase.collection("users").document(userId).get();
-
+    public void getUser(EventListener<DocumentSnapshot> snapshotListener) {
+        mDatabase.collection("users").document(userId).addSnapshotListener(snapshotListener);
     }
 
 

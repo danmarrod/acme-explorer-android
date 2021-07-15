@@ -51,7 +51,7 @@ public class User implements Serializable {
         this.name = name;
     }
 
-    public String getSurnames() {
+    public String getSurname() {
         return surname;
     }
 
