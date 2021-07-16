@@ -90,10 +90,10 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.ViewHo
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isLiked) {
                 trip.setLike(isLiked);
-                for (Trip t : Constants.chargedTrips) {
+                /*for (Trip t : Constants.chargedTrips) {
                     if (t.getTicker().contentEquals(trip.getTicker()))
                         t.setLike(isLiked);
-                }
+                }*/
             }
         });
 
