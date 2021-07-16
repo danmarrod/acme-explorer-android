@@ -178,7 +178,7 @@ public class TripCreateActivity extends AppCompatActivity {
         trip.setTicker(generateTicker());
         trip.setLike(false);
         trip.setLatitude(Double.parseDouble(trip_create_latitude_et.getText().toString()));
-        trip.setLatitude(Double.parseDouble(trip_create_longitude_et.getText().toString()));
+        trip.setLongitude(Double.parseDouble(trip_create_longitude_et.getText().toString()));
 
         if (trip_create_picture_et.getText().toString().isEmpty())
             trip.setPicture(DEFAULT_PICTURE);
