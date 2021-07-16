@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 import com.tecmov.acmeexplorer.Constants;
+import com.tecmov.acmeexplorer.LocationActivity;
 import com.tecmov.acmeexplorer.R;
 import com.tecmov.acmeexplorer.TripActivity;
 import com.tecmov.acmeexplorer.entity.Trip;

@@ -13,11 +13,13 @@ public class Trip implements Serializable {
     private Double price;
     private Date startedDate, finishedDate;
     private boolean isLike;
+    private Double latitude;
+    private Double longitude;
 
     public Trip() {
     }
 
-    public Trip(String ticker, String title, String description, Double price, Date startedDate, Date finishedDate, String picture, boolean isLike) {
+    public Trip(String ticker, String title, String description, Double price, Date startedDate, Date finishedDate, String picture, boolean isLike, Double latitude, Double longitude) {
         this.ticker = ticker;
         this.title = title;
         this.description = description;
@@ -26,6 +28,8 @@ public class Trip implements Serializable {
         this.finishedDate = finishedDate;
         this.picture = picture;
         this.isLike = isLike;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public boolean isLike() {
@@ -91,6 +95,23 @@ public class Trip implements Serializable {
     public void setFinishedDate(Date finishedDate) {
         this.finishedDate = finishedDate;
     }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
 
     @Override
     public String toString() {

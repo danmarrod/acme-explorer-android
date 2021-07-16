@@ -60,6 +60,12 @@ public class TripCreateActivity extends AppCompatActivity {
     private TextInputLayout trip_create_price;
     private AutoCompleteTextView trip_create_price_et;
 
+    private TextInputLayout trip_create_latitude;
+    private AutoCompleteTextView trip_create_latitude_et;
+
+    private TextInputLayout trip_create_longitude;
+    private AutoCompleteTextView trip_create_longitude_et;
+
     private FirebaseAuth mAuth;
     private FirestoreService firestoreService;
 
@@ -72,8 +78,8 @@ public class TripCreateActivity extends AppCompatActivity {
         firestoreService = firestoreService.getServiceInstance();
 
         trip_create_button = findViewById(R.id.trip_create_button);
-        trip_create_ticker = findViewById(R.id.trip_create_ticker);
-        trip_create_ticker_et = findViewById(R.id.trip_create_ticker_et);
+        //trip_create_ticker = findViewById(R.id.trip_create_ticker);
+        //trip_create_ticker_et = findViewById(R.id.trip_create_ticker_et);
         trip_create_title = findViewById(R.id.trip_create_title);
         trip_create_title_et = findViewById(R.id.trip_create_title_et);
         trip_create_description = findViewById(R.id.trip_create_description);
@@ -86,6 +92,10 @@ public class TripCreateActivity extends AppCompatActivity {
         trip_create_picture_et = findViewById(R.id.trip_create_picture_et);
         trip_create_price = findViewById(R.id.trip_create_price);
         trip_create_price_et = findViewById(R.id.trip_create_price_et);
+        trip_create_latitude = findViewById(R.id.trip_create_latitude);
+        trip_create_latitude_et = findViewById(R.id.trip_create_latitude_et);
+        trip_create_longitude = findViewById(R.id.trip_create_longitude);
+        trip_create_longitude_et = findViewById(R.id.trip_create_longitude_et);
 
         trip_create_button.setOnClickListener(l -> this.attemptTripCreate());
     }
@@ -98,6 +108,8 @@ public class TripCreateActivity extends AppCompatActivity {
         trip_create_start_date.setError(null);
         trip_create_finish_date.setError(null);
         trip_create_picture.setError(null);
+        trip_create_latitude.setError(null);
+        trip_create_longitude.setError(null);
         boolean fails = false;
 
         if (trip_create_title_et.getText().length() == 0) {
@@ -137,6 +149,19 @@ public class TripCreateActivity extends AppCompatActivity {
             fails = true;
         }
 
+        if (trip_create_latitude_et.getText().length() == 0) {
+            trip_create_latitude.setErrorEnabled(true);
+            trip_create_latitude.setError(getString(R.string.trip_create_verication_empty));
+            fails = true;
+        }
+
+        if (trip_create_longitude_et.getText().length() == 0) {
+            trip_create_longitude.setErrorEnabled(true);
+            trip_create_longitude.setError(getString(R.string.trip_create_verication_empty));
+            fails = true;
+        }
+
+
         if (!fails)
             this.tripCreate();
 
@@ -152,6 +177,9 @@ public class TripCreateActivity extends AppCompatActivity {
         trip.setFinishedDate(Util.StringToDate(trip_create_finish_date_et.getText().toString()));
         trip.setTicker(generateTicker());
         trip.setLike(false);
+        trip.setLatitude(Double.parseDouble(trip_create_latitude_et.getText().toString()));
+        trip.setLatitude(Double.parseDouble(trip_create_longitude_et.getText().toString()));
+
         if (trip_create_picture_et.getText().toString().isEmpty())
             trip.setPicture(DEFAULT_PICTURE);
         else

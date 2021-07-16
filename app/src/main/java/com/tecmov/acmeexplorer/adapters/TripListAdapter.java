@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,6 +23,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 import com.tecmov.acmeexplorer.Constants;
 import com.tecmov.acmeexplorer.FirestoreService;
+import com.tecmov.acmeexplorer.LocationActivity;
 import com.tecmov.acmeexplorer.R;
 import com.tecmov.acmeexplorer.TripActivity;
 import com.tecmov.acmeexplorer.entity.Trip;
@@ -78,6 +80,12 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.ViewHo
             view.getContext().startActivity(intent);
         });
 
+        holder.linearLayoutTrip.setOnClickListener(view -> {
+            Intent intent = new Intent(view.getContext(), TripActivity.class);
+            intent.putExtra("Trip", trip);
+            view.getContext().startActivity(intent);
+        });
+
         holder.switchLike.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isLiked) {
@@ -87,6 +95,12 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.ViewHo
                         t.setLike(isLiked);
                 }
             }
+        });
+
+        holder.trip_location_button.setOnClickListener(view -> {
+            Intent intent = new Intent(view.getContext(), LocationActivity.class);
+            intent.putExtra("Trip", trip);
+            view.getContext().startActivity(intent);
         });
     }
 
@@ -116,6 +130,7 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.ViewHo
         ImageView imageView;
         Switch switchLike;
         LinearLayout linearLayoutTrip;
+        Button trip_location_button;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -126,6 +141,7 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.ViewHo
             textViewFinishedDate = itemView.findViewById(R.id.textViewFinishedDate);
             imageView = itemView.findViewById(R.id.imageViewTrip);
             switchLike = itemView.findViewById(R.id.switchLike);
+            trip_location_button = itemView.findViewById(R.id.trip_location_button);
             linearLayoutTrip = itemView.findViewById(R.id.linearLayoutTrip);
         }
     }

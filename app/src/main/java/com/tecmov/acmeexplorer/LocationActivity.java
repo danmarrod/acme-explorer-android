@@ -27,6 +27,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.snackbar.Snackbar;
+import com.squareup.picasso.Picasso;
+import com.tecmov.acmeexplorer.entity.Trip;
 import com.tecmov.acmeexplorer.resttypes.WeatherResponse;
 import com.tecmov.acmeexplorer.resttypes.WeatherRetrofitInterface;
 
@@ -45,11 +47,15 @@ public class LocationActivity extends FragmentActivity implements OnMapReadyCall
     private Location userLocation;
     private Retrofit retrofit;
     private SupportMapFragment supportMapFragment;
+    private Trip trip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location);
+
+        if (getIntent().getSerializableExtra("Trip") != null)
+            trip = (Trip) getIntent().getSerializableExtra("Trip");
 
         location = findViewById(R.id.location);
         location_weather_temp = findViewById(R.id.location_weather_temp);
@@ -127,12 +133,16 @@ public class LocationActivity extends FragmentActivity implements OnMapReadyCall
         this.googleMap = googleMap;
         LatLng location;
 
-        location = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
+        if (trip != null && trip.getLatitude() != null && trip.getLongitude() != null) {
+            location = new LatLng(trip.getLatitude(), trip.getLongitude());
+        } else
+            location = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
+
         googleMap.addMarker(new MarkerOptions().position(location).title("ACTUAL USER LOCATION"));
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 11.0f));
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 12.0f));
 
         WeatherRetrofitInterface service = retrofit.create(WeatherRetrofitInterface.class);
-        Call<WeatherResponse> response = service.getCurrentWeather((float) userLocation.getLatitude(), (float) userLocation.getLongitude(), getString(R.string.open_weather_map_api_key), "Celsius");
+        Call<WeatherResponse> response = service.getCurrentWeather((float) userLocation.getLatitude(), (float) userLocation.getLongitude(), getString(R.string.open_weather_map_api_key), "celsius");
         response.enqueue(new Callback<WeatherResponse>() {
 
             @Override

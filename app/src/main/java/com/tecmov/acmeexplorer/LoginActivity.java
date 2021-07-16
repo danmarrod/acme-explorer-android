@@ -44,8 +44,6 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.tecmov.acmeexplorer.entity.Trip;
 
-import org.w3c.dom.Document;
-
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -265,7 +263,7 @@ public class LoginActivity extends AppCompatActivity {
     private void testDatabases() {
 
         firebaseDatabaseService = FirebaseDatabaseService.getServiceInstance();
-        firebaseDatabaseService.saveTrips(new Trip("ABCA045", "Madrid", "Museo del Prado", 32.00, new GregorianCalendar(2021, 6, 15).getTime(), new GregorianCalendar(2021, 6, 30).getTime(), "https://iconape.com/wp-content/png_logo_vector/beach-tour-logo.png", false), new DatabaseReference.CompletionListener() {
+        firebaseDatabaseService.saveTrips(new Trip("TKABCA045", "Madrid", "Museo del Prado", 32.00, new GregorianCalendar(2021, 6, 15).getTime(), new GregorianCalendar(2021, 6, 30).getTime(), "https://iconape.com/wp-content/png_logo_vector/beach-tour-logo.png", false, 40.4165 , -3.70256), new DatabaseReference.CompletionListener() {
 
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
@@ -374,7 +372,7 @@ public class LoginActivity extends AppCompatActivity {
 
         FirestoreService firestoreService = FirestoreService.getServiceInstance();
         //
-        firestoreService.saveTrip(new Trip("ABCA045", "Madrid", "Museo del Prado", 32.5, new GregorianCalendar(2021, 6, 15).getTime(), new GregorianCalendar(2021, 6, 30).getTime(), "https://iconape.com/wp-content/png_logo_vector/beach-tour-logo.png", false), new OnCompleteListener<DocumentReference>() {
+        firestoreService.saveTrip(new Trip("ABCA045", "Madrid", "Museo del Prado", 32.5, new GregorianCalendar(2021, 6, 15).getTime(), new GregorianCalendar(2021, 6, 30).getTime(), "https://iconape.com/wp-content/png_logo_vector/beach-tour-logo.png", false, 40.4165, -3.70256), new OnCompleteListener<DocumentReference>() {
             @Override
             public void onComplete(@NonNull Task<DocumentReference> task) {
                 if (task.isSuccessful()) {

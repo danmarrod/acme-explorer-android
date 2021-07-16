@@ -67,11 +67,13 @@
 
     </LinearLayout>
 
+
     <Switch
         android:id="@+id/switchLike"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="UpdateTrip"
         android:text="Like" />
+
 
 </LinearLayout>
