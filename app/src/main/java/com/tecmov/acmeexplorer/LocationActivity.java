@@ -142,8 +142,9 @@ public class LocationActivity extends FragmentActivity implements OnMapReadyCall
             tripLocation.setLongitude(trip.getLongitude());
             googleMap.addMarker(new MarkerOptions().position(location).title("ACTUAL TRIP LOCATION"));
             distance = tripLocation.distanceTo(userLocation);
-            location_distance.setText("USER DISTANCE: " + distance);
-
+            location_distance.setText("USER DISTANCE TO " + trip.getTitle().toUpperCase() + ": " + distance / 1000 + "Kms");
+            userLocation.setLongitude(trip.getLongitude());
+            userLocation.setLatitude(trip.getLatitude());
         } else {
             location = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
             googleMap.addMarker(new MarkerOptions().position(location).title("ACTUAL USER LOCATION"));
@@ -151,13 +152,13 @@ public class LocationActivity extends FragmentActivity implements OnMapReadyCall
 
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 12.0f));
         WeatherRetrofitInterface service = retrofit.create(WeatherRetrofitInterface.class);
-        Call<WeatherResponse> response = service.getCurrentWeather((float) userLocation.getLatitude(), (float) userLocation.getLongitude(), getString(R.string.open_weather_map_api_key), "celsius");
+        Call<WeatherResponse> response = service.getCurrentWeather((float) userLocation.getLatitude(), (float) userLocation.getLongitude(), getString(R.string.open_weather_map_api_key), "metric", "esp");
         response.enqueue(new Callback<WeatherResponse>() {
 
             @Override
             public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    location_weather_temp.setText("TEMPERATURE (" + response.body().getName() + ")" + response.body().getMain().getTemp() + " C");
+                    location_weather_temp.setText("TEMPERATURE (" + response.body().getName() + "): " + response.body().getMain().getTemp() + " C");
                     Log.i("Acme-Explorer", "Actual temperature is " + response.body().getMain().getTemp());
                 }
             }

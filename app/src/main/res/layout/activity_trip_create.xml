@@ -128,7 +128,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/trip_create_longitude_et_hint"
-            android:inputType="numberSigned"
+            android:inputType="numberSigned|numberDecimal"
             android:maxLines="1"
             android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>
