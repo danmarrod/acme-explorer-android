@@ -58,4 +58,5 @@
     <string name="location_cancel">Cancelar</string>
     <string name="main_location_buttonn_text">Localizar</string>
     <string name="main_location_button_text">Location</string>
+    <string name="open_weather_map_api_key">4e4a72797bd0f8c5e75adca70fdb5f16</string>
 </resources>
