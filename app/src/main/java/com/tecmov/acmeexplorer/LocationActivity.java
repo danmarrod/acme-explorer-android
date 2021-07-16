@@ -15,6 +15,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -82,19 +85,40 @@ public class LocationActivity extends FragmentActivity implements OnMapReadyCall
     private void startLocationServices() {
 
         FusedLocationProviderClient locationServices = LocationServices.getFusedLocationProviderClient(this);
-        locationServices.getLastLocation().addOnCompleteListener(task -> {
+
+        /*locationServices.getLastLocation().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
                 userLocation = task.getResult();
                 Log.i("Acme-Explorer", "Location: " + userLocation.getLatitude() + "," + userLocation.getLongitude() + "," + userLocation.getAccuracy());
                 supportMapFragment.getMapAsync(this);
+            } else {
+                Log.i("Acme-Explorer", "Location error: " + task.getResult());
             }
-        });
+        });*/
 
-
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setInterval(3000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationServices.requestLocationUpdates(locationRequest, locationCallback, null);
     }
 
-    public void stropService() {
-        //LocationServices.getFusedLocationProviderClient(this).removeLocationUpdates(localtionCallback);
+    LocationCallback locationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            super.onLocationResult(locationResult);
+            if (locationResult == null || locationResult.getLastLocation() == null || !locationResult.getLastLocation().hasAccuracy()) {
+                Toast.makeText(LocationActivity.this, R.string.location_gps, Toast.LENGTH_LONG).show();
+                return;
+            }
+            userLocation = locationResult.getLastLocation();
+            Log.i("Acme-Explorer", "Location: " + userLocation.getLatitude() + "," + userLocation.getLongitude() + "," + userLocation.getAccuracy());
+            supportMapFragment.getMapAsync(LocationActivity.this);
+        }
+    };
+
+
+    public void stopService() {
+        LocationServices.getFusedLocationProviderClient(this).removeLocationUpdates(locationCallback);
     }
 
 
@@ -105,23 +129,23 @@ public class LocationActivity extends FragmentActivity implements OnMapReadyCall
 
         location = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
         googleMap.addMarker(new MarkerOptions().position(location).title("ACTUAL USER LOCATION"));
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 10.0f));
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 11.0f));
 
         WeatherRetrofitInterface service = retrofit.create(WeatherRetrofitInterface.class);
-        Call<WeatherResponse> response = service.getCurrentWeather((float) userLocation.getLatitude(), (float) userLocation.getLongitude(), getString(R.string.open_weather_map_api_key), "metrics");
+        Call<WeatherResponse> response = service.getCurrentWeather((float) userLocation.getLatitude(), (float) userLocation.getLongitude(), getString(R.string.open_weather_map_api_key), "Celsius");
         response.enqueue(new Callback<WeatherResponse>() {
 
             @Override
             public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    location_weather_temp.setText("TEMPERATURE (" + response.body().getName() + ")" + response.body().getMain().getTemp() + "C");
-                    Log.i("AcmeExplorer", "Actual temperature is " + response.body().getMain().getTemp());
+                    location_weather_temp.setText("TEMPERATURE (" + response.body().getName() + ")" + response.body().getMain().getTemp() + " C");
+                    Log.i("Acme-Explorer", "Actual temperature is " + response.body().getMain().getTemp());
                 }
             }
 
             @Override
             public void onFailure(Call<WeatherResponse> call, Throwable t) {
-                Log.i("AcmeExplorer", "REST: calling weather error. " + t.getMessage());
+                Log.i("Acme-Explorer", "REST: calling weather error. " + t.getMessage());
             }
         });
     }
