@@ -41,7 +41,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class LocationActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private static final int PERMISSION_REQUEST_CODE_LOCATION = 0x123;
-    private TextView location;
+    private TextView location_distance;
     private TextView location_weather_temp;
     private GoogleMap googleMap;
     private Location userLocation;
@@ -57,7 +57,7 @@ public class LocationActivity extends FragmentActivity implements OnMapReadyCall
         if (getIntent().getSerializableExtra("Trip") != null)
             trip = (Trip) getIntent().getSerializableExtra("Trip");
 
-        location = findViewById(R.id.location);
+        location_distance = findViewById(R.id.location_distance);
         location_weather_temp = findViewById(R.id.location_weather_temp);
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         retrofit = new Retrofit.Builder().baseUrl("https://api.openweathermap.org/").addConverterFactory(GsonConverterFactory.create()).build();
@@ -65,7 +65,7 @@ public class LocationActivity extends FragmentActivity implements OnMapReadyCall
         String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
         if (ContextCompat.checkSelfPermission(this, permissions[0]) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[0])) {
-                Snackbar.make(location, R.string.location_rationale, Snackbar.LENGTH_LONG).setAction(R.string.location_rationale_ok, view ->
+                Snackbar.make(location_distance, R.string.location_rationale, Snackbar.LENGTH_LONG).setAction(R.string.location_rationale_ok, view ->
                         ActivityCompat.requestPermissions(LocationActivity.this, permissions, PERMISSION_REQUEST_CODE_LOCATION)
                 ).show();
             } else {
@@ -132,15 +132,24 @@ public class LocationActivity extends FragmentActivity implements OnMapReadyCall
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
         LatLng location;
+        float distance;
+        Location tripLocation;
 
         if (trip != null && trip.getLatitude() != null && trip.getLongitude() != null) {
             location = new LatLng(trip.getLatitude(), trip.getLongitude());
-        } else
+            tripLocation = new Location("");
+            tripLocation.setLatitude(trip.getLatitude());
+            tripLocation.setLongitude(trip.getLongitude());
+            googleMap.addMarker(new MarkerOptions().position(location).title("ACTUAL TRIP LOCATION"));
+            distance = tripLocation.distanceTo(userLocation);
+            location_distance.setText("USER DISTANCE: " + distance);
+
+        } else {
             location = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
+            googleMap.addMarker(new MarkerOptions().position(location).title("ACTUAL USER LOCATION"));
+        }
 
-        googleMap.addMarker(new MarkerOptions().position(location).title("ACTUAL USER LOCATION"));
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 12.0f));
-
         WeatherRetrofitInterface service = retrofit.create(WeatherRetrofitInterface.class);
         Call<WeatherResponse> response = service.getCurrentWeather((float) userLocation.getLatitude(), (float) userLocation.getLongitude(), getString(R.string.open_weather_map_api_key), "celsius");
         response.enqueue(new Callback<WeatherResponse>() {
