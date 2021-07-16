@@ -95,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.GONE);
 
-        startActivity(new Intent(this, MapActivity.class));
+        //startActivity(new Intent(this, LocationActivity.class));
 
     }
 

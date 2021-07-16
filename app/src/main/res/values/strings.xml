@@ -53,4 +53,9 @@
     <string name="profile_save_button_text">Guardar</string>
     <string name="profile_photo_button_text">FOTO</string>
     <string name="take_picture_button_text">FOTO</string>
+    <string name="location_rationale">Necesitamos tu localización para esta funcionalidad</string>
+    <string name="location_rationale_ok">Aceptar</string>
+    <string name="location_cancel">Cancelar</string>
+    <string name="main_location_buttonn_text">Localizar</string>
+    <string name="main_location_button_text">Location</string>
 </resources>

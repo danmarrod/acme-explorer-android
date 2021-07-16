@@ -22,7 +22,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     GridView gridView;
-    Button main_create_trip_button, main_create_profile_button;
+    Button main_create_trip_button, main_create_profile_button, main_location_button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +32,11 @@ public class MainActivity extends AppCompatActivity {
         gridView.setAdapter(new LinkAdapter(Link.generateLink(),this));
         main_create_trip_button = findViewById(R.id.main_create_trip_button);
         main_create_profile_button = findViewById(R.id.main_create_profile_button);
+        main_location_button = findViewById(R.id.main_location_button);
 
         main_create_trip_button.setOnClickListener(l -> startActivity(new Intent(this, TripCreateActivity.class)));
         main_create_profile_button.setOnClickListener(l -> startActivity(new Intent(this, ProfileActivity.class)));
+        main_location_button.setOnClickListener(l -> startActivity(new Intent(this, LocationActivity.class)));
     }
 
     public void ListView(View view) {
