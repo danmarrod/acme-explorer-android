@@ -24,12 +24,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.snackbar.Snackbar;
 
+import retrofit2.Retrofit;
+
 public class LocationActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private static final int PERMISSION_REQUEST_CODE_LOCATION = 0x123;
     private TextView location;
     private GoogleMap googleMap;
     private Double latitude, longitude;
+    private Retrofit retrofit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
