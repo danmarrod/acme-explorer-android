@@ -50,6 +50,7 @@ public class LocationActivity extends FragmentActivity implements OnMapReadyCall
 
         location = findViewById(R.id.location);
         location_weather_temp = findViewById(R.id.location_weather_temp);
+        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         retrofit = new Retrofit.Builder().baseUrl("https://api.openweathermap.org/").addConverterFactory(GsonConverterFactory.create()).build();
 
         String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
@@ -64,8 +65,6 @@ public class LocationActivity extends FragmentActivity implements OnMapReadyCall
         } else {
             startLocationServices();
         }
-
-        supportMapFragment.getMapAsync(this);
     }
 
     @Override
