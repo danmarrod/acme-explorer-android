@@ -62,4 +62,5 @@
     <string name="location_gps">Debes activar el GPS</string>
     <string name="trip_create_latitude_et_hint">Latitud</string>
     <string name="trip_create_longitude_et_hint">Longitud</string>
+    <string name="gps_enable">Recuerde tener activo su gps</string>
 </resources>
