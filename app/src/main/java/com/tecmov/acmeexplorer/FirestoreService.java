@@ -75,11 +75,11 @@ public class    FirestoreService {
         return mDatabase.collection("users").document(userId).collection("tripsLikes").addSnapshotListener(querySnapshotOnCompleteListener);
     }
 
-    public void deleteTripsLike(String tripId, EventListener<QuerySnapshot> querySnapshotOnCompleteListener) {
-        mDatabase.collection("users").document(userId).collection("tripsLikes").document(tripId).delete();
-    }
-
     public void getTripsLiked(OnCompleteListener<QuerySnapshot> querySnapshotOnCompleteListener) {
         mDatabase.collection("users").document(userId).collection("tripsLikes").get().addOnCompleteListener(querySnapshotOnCompleteListener);
+    }
+
+    public void removeTrip(String id) {
+        mDatabase.collection("users").document(userId).collection("tripsLikes").document(id).delete();
     }
 }

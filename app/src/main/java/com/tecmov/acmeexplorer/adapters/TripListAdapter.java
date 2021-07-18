@@ -81,6 +81,7 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.ViewHo
         holder.textViewStartedDate.setText(Util.formatDate(trip.getStartedDate().getTime() / 1000));
         holder.textViewFinishedDate.setText(Util.formatDate(trip.getFinishedDate().getTime() / 1000));
         holder.switchLike.setChecked(trip.isLike());
+
         Picasso.get()
                 .load(trip.getPicture())
                 .placeholder(android.R.drawable.ic_dialog_map)
@@ -102,10 +103,12 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.ViewHo
         holder.switchLike.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isLiked) {
+
+                FirestoreService firestoreService = FirestoreService.getServiceInstance();
+
                 if (isLiked == true) {
                     trip.setLike(true);
                     List<Trip> tripsLiked = new ArrayList<>();
-                    FirestoreService firestoreService = FirestoreService.getServiceInstance();
 
                     firestoreService.getTripsLiked(new OnCompleteListener<QuerySnapshot>() {
                         @Override
@@ -141,6 +144,21 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.ViewHo
                         }
                     });
 
+                } else {
+                    //TODO
+                    firestoreService.getTripsLiked(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                                    Trip ftrip = documentSnapshot.toObject(Trip.class);
+                                    if (ftrip.equals(trip)) {
+                                        firestoreService.removeTrip(documentSnapshot.getId());
+                                    }
+                                }
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -164,8 +182,9 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.ViewHo
         }
 
         tripList.clear();
-        if (queryDocumentSnapshots != null)
+        if (queryDocumentSnapshots != null) {
             tripList.addAll(queryDocumentSnapshots.toObjects(Trip.class));
+        }
 
         notifyDataSetChanged();
         mDataChangedListener.onDataChanged();
