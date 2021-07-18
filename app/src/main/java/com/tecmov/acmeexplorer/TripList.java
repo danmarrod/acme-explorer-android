@@ -69,4 +69,8 @@ public class TripList extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void FilterView(View view) {
+
+    }
 }

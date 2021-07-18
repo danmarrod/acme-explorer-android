@@ -1,6 +1,7 @@
 package com.tecmov.acmeexplorer;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -66,5 +67,19 @@ public class    FirestoreService {
         mDatabase.collection("users").document(userId).addSnapshotListener(snapshotListener);
     }
 
+    public void saveTripLike(Trip trip, OnCompleteListener<DocumentReference> listener) {
+        mDatabase.collection("users").document(userId).collection("tripsLikes").add(trip).addOnCompleteListener(listener);
+    }
 
+    public ListenerRegistration getTripsLike(EventListener<QuerySnapshot> querySnapshotOnCompleteListener) {
+        return mDatabase.collection("users").document(userId).collection("tripsLikes").addSnapshotListener(querySnapshotOnCompleteListener);
+    }
+
+    public void deleteTripsLike(String tripId, EventListener<QuerySnapshot> querySnapshotOnCompleteListener) {
+        mDatabase.collection("users").document(userId).collection("tripsLikes").document(tripId).delete();
+    }
+
+    public void getTripsLiked(OnCompleteListener<QuerySnapshot> querySnapshotOnCompleteListener) {
+        mDatabase.collection("users").document(userId).collection("tripsLikes").get().addOnCompleteListener(querySnapshotOnCompleteListener);
+    }
 }

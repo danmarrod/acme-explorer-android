@@ -1,6 +1,7 @@
 package com.tecmov.acmeexplorer.adapters;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +11,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -24,8 +30,10 @@ import com.squareup.picasso.Picasso;
 import com.tecmov.acmeexplorer.Constants;
 import com.tecmov.acmeexplorer.FirestoreService;
 import com.tecmov.acmeexplorer.LocationActivity;
+import com.tecmov.acmeexplorer.MainActivity;
 import com.tecmov.acmeexplorer.R;
 import com.tecmov.acmeexplorer.TripActivity;
+import com.tecmov.acmeexplorer.TripCreateActivity;
 import com.tecmov.acmeexplorer.entity.Trip;
 import com.tecmov.acmeexplorer.utils.Util;
 
@@ -50,6 +58,11 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.ViewHo
     public TripListAdapter(String userId) {
         tripList = new ArrayList<>();
         listenerRegistration = FirestoreService.getServiceInstance().getTrips(this);
+    }
+
+    public TripListAdapter(boolean liked) {
+        tripList = new ArrayList<>();
+        listenerRegistration = FirestoreService.getServiceInstance().getTripsLike(this);
     }
 
     @NonNull
@@ -89,11 +102,46 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.ViewHo
         holder.switchLike.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isLiked) {
-                trip.setLike(isLiked);
-                /*for (Trip t : Constants.chargedTrips) {
-                    if (t.getTicker().contentEquals(trip.getTicker()))
-                        t.setLike(isLiked);
-                }*/
+                if (isLiked == true) {
+                    trip.setLike(true);
+                    List<Trip> tripsLiked = new ArrayList<>();
+                    FirestoreService firestoreService = FirestoreService.getServiceInstance();
+
+                    firestoreService.getTripsLiked(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                                    Trip trip = documentSnapshot.toObject(Trip.class);
+                                    tripsLiked.add(trip);
+                                }
+                                Log.i("Acme-Explorer", "Firestore lectura " + tripsLiked.toString());
+
+                                if (!tripsLiked.contains(trip)) {
+                                    firestoreService.saveTripLike(trip, task1 -> {
+                                        if (task1.isSuccessful()) {
+                                            DocumentReference documentReference = task1.getResult();
+                                            documentReference.get().addOnCompleteListener(task2 -> {
+                                                if (task2.isSuccessful()) {
+                                                    DocumentSnapshot documentSnapshot = task2.getResult();
+                                                    Trip trip = documentSnapshot.toObject(Trip.class);
+                                                    Log.i("Acme-Explorer", "Liked trip saved feedback: " + trip.toString());
+                                                }
+                                            });
+                                            Log.i("Acme-Explorer", "Liked trip saved successfully " + task1.getResult().getId());
+
+                                        } else {
+                                            Log.i("Acme-Explorer", "Error saving liked trip");
+                                        }
+                                    });
+                                }
+                            }
+
+
+                        }
+                    });
+
+                }
             }
         });
 
@@ -111,12 +159,12 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.ViewHo
 
     @Override
     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-        if (e != null){
+        if (e != null) {
             mErrorListener.onItemError(e);
         }
 
         tripList.clear();
-        if(queryDocumentSnapshots != null)
+        if (queryDocumentSnapshots != null)
             tripList.addAll(queryDocumentSnapshots.toObjects(Trip.class));
 
         notifyDataSetChanged();
@@ -146,16 +194,16 @@ public class TripListAdapter extends RecyclerView.Adapter<TripListAdapter.ViewHo
         }
     }
 
-    public void setErrorListener (ItemErrorListener itemErrorListener){
+    public void setErrorListener(ItemErrorListener itemErrorListener) {
         mErrorListener = itemErrorListener;
     }
 
 
     public interface ItemErrorListener {
-        void onItemError (FirebaseFirestoreException error);
+        void onItemError(FirebaseFirestoreException error);
     }
 
-    public void setDataChangedListener (DataChangedListener dataChangedListener){
+    public void setDataChangedListener(DataChangedListener dataChangedListener) {
         mDataChangedListener = dataChangedListener;
     }
 

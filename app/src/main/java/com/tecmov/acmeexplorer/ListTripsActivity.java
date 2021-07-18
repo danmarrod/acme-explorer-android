@@ -163,4 +163,5 @@ public class ListTripsActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

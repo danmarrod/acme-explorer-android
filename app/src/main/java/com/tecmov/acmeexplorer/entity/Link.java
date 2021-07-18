@@ -48,7 +48,7 @@ public class Link {
     public static List<Link> generateLink(){
         List<Link> list = new ArrayList<>();
 
-        list.add(new Link("Trips", R.drawable.travels, ListTripsActivity.class));
+        list.add(new Link("All trips", R.drawable.travels, ListTripsActivity.class));
         list.add(new Link("Liked trips",R.drawable.liked_travels, ListMyTripsActivity.class));
         list.add(new Link("New trips",R.drawable.my_travels, TripList.class));
 
